@@ -148,7 +148,7 @@ function card(array $unit): string
     foreach (['facebook' => 'Facebook','instagram' => 'Instagram','website' => 'Strona internetowa'] as $key => $label) {
         if (!empty($fields[$key])) {
             $icon = social_icon($key);
-            $links .= '<a class="botud-link'.($icon ? ' botud-social-link' : '').'" href="'.esc_url($fields[$key], ['http','https']).'">'.$icon.esc_html($label).'</a>';
+            $links .= '<a class="botud-link'.($icon ? ' botud-social-link' : '').'" href="'.esc_url($fields[$key], ['http','https']).'" target="_blank" rel="noopener noreferrer">'.$icon.esc_html($label).'</a>';
         }
     }
     return $html.($links ? '<div class="botud-links">'.$links.'</div>' : '').'</article>';
