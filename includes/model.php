@@ -12,7 +12,7 @@ function defaults(): array
         'accent' => '#243060', 'bounds' => [], 'lines' => [], 'legacy_hashes' => [],
         'surface' => '#eef0f7', 'canvas_background' => '#f3f6f5', 'river_color' => '#b8d8e5', 'card_background' => '#ffffff',
         'radius' => 12, 'density' => 'comfortable', 'layout' => 'split', 'map_height' => 480, 'map_height_mobile' => 380,
-        'max_zoom' => 18, 'road_map' => false, 'show_labels' => true, 'show_counts' => true, 'show_kind_filters' => true, 'expand_groups' => false,
+        'max_zoom' => 18, 'road_map' => false, 'map_mode' => 'schematic', 'method_icons' => [], 'show_labels' => true, 'show_counts' => true, 'show_kind_filters' => true, 'expand_groups' => false,
         'tiles_url' => 'https://tile.openstreetmap.org/{z}/{x}/{y}.png', 'provider_name' => 'OpenStreetMap',
         'provider_attribution' => '', 'provider_attribution_url' => '',
         'provider_privacy_url' => 'https://osmfoundation.org/wiki/Privacy_Policy',
@@ -24,7 +24,11 @@ function defaults(): array
 
 function settings(): array
 {
-    return array_replace(defaults(), (array) get_option(OPTION, []));
+    $stored = (array) get_option(OPTION, []);
+    $value = array_replace(defaults(), $stored);
+    $value['map_mode'] = organization_choice($stored['map_mode'] ?? null, ['schematic' => '', 'road' => '', 'switchable' => ''], !empty($stored['road_map']) ? 'switchable' : 'schematic');
+    $value['road_map'] = $value['map_mode'] !== 'schematic';
+    return $value;
 }
 
 function appearance_fields(): array
@@ -46,6 +50,7 @@ function appearance_fields(): array
         'show_kind_filters' => ['label' => 'Pokazuj przyciski metodyk nad filtrami', 'type' => 'checkbox'],
         'expand_groups' => ['label' => 'Rozwijaj miejscowości także bez wybranego filtra', 'type' => 'checkbox'],
         'road_map' => ['label' => 'Udostępnij opcjonalną mapę drogową', 'type' => 'checkbox'],
+        'map_mode' => ['label' => 'Widok mapy', 'type' => 'select', 'options' => ['schematic' => 'Tylko schemat', 'road' => 'Tylko mapa drogowa', 'switchable' => 'Schemat i mapa drogowa z przełącznikiem']],
         'search_enabled' => ['label' => 'Wyszukiwanie adresów w panelu', 'type' => 'checkbox'],
     ];
 }
@@ -107,6 +112,8 @@ function sanitize_settings(array $input, array $previous): array
             $clean[$key] = isset($field['options'][$value]) ? $value : $default[$key];
         }
     }
+    $clean['road_map'] = $clean['map_mode'] !== 'schematic';
+    $clean['method_icons'] = sanitize_method_icons(is_array($input['method_icons'] ?? null) ? $input['method_icons'] : ($previous['method_icons'] ?? []));
     $clean['tiles_url'] = sanitize_tile_url(is_scalar($input['tiles_url'] ?? null) ? (string) $input['tiles_url'] : '') ?: $previous['tiles_url'];
     $clean['provider_name'] = $clean['provider_name'] ?: $default['provider_name'];
     $clean['provider_attribution_url'] = esc_url_raw(is_scalar($input['provider_attribution_url'] ?? null) ? (string) $input['provider_attribution_url'] : '', ['https']);

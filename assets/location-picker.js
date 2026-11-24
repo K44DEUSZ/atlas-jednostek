@@ -99,7 +99,7 @@
         open.setAttribute('aria-expanded', 'true');
         open.textContent = 'Zamknij mapę';
         map = L.map(canvas, {
-          scrollWheelZoom: false,
+          scrollWheelZoom: true,
           maxZoom: config.maxZoom,
           minZoom: 1,
           worldCopyJump: true,

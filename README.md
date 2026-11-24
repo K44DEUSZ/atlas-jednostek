@@ -1,14 +1,14 @@
 # Atlas Jednostek
 
-Wersja 1.0.1. Autor: [kaadeusz.pl](https://kaadeusz.pl/).
+Wersja 1.0. Autor: [kaadeusz.pl](https://kaadeusz.pl/).
 
-Wtyczka WordPress do prowadzenia publicznego wykazu jednostek ZHP z typami, metodykami, osobami prowadzącymi, kontaktami i mapą miejsc działania. Panel korzysta z natywnych tabel, formularzy, metaboxów i biblioteki mediów WordPressa. Nie dodaje własnego arkusza CSS panelu.
+Wtyczka WordPress do prowadzenia publicznego wykazu jednostek ZHP z typami, metodykami, osobami prowadzącymi, kontaktami i mapą miejsc działania. Panel korzysta z natywnych tabel, formularzy, metaboxów i biblioteki mediów WordPressa. Podglądy ikon mają jedynie ustawiony rozmiar, pozostały wygląd pochodzi z WordPressa.
 
 ## Instalacja
 
 Wymagania: WordPress 6.6+, PHP 8.1+, współczesna przeglądarka. Brak zależności od ACF, Breakdance i płatnych licencji.
 
-1. Wgraj `atlas-jednostek-1.0.1.zip` przez Wtyczki, Dodaj wtyczkę, Wyślij wtyczkę, a następnie ją aktywuj.
+1. Wgraj `atlas-jednostek-1.0.zip` przez Wtyczki, Dodaj wtyczkę, Wyślij wtyczkę, a następnie ją aktywuj.
 2. W menu Atlas Jednostek dodaj obszary, następnie jednostki.
 3. Wstaw [atlas_jednostek] do bloku Krótki kod lub elementu Shortcode używanego buildera.
 
@@ -52,7 +52,7 @@ Domyślna wyszukiwarka to publiczna instancja Photon prowadzona przez komoot. Je
 
 Współrzędne WGS84 podaje się w kolejności szerokość, długość. Obsługiwany zakres mapy: szerokość od -85 do 85, długość od -180 do 180. Wartość 0 jest poprawna. Puste muszą być oba pola. Błędny punkt nie zastępuje poprzednich danych. Redaktor wybiera miejsce przeznaczone do publicznego pokazania; wtyczka nie pobiera lokalizacji odwiedzającego.
 
-Mapa obsługuje przybliżanie, oddalanie, dopasowanie do punktów, przeciąganie, dotyk, klawiaturę i przyciski kierunków. Kółko myszy przewija stronę. Wybór punktu, typu jednostki i metodyki można łączyć. Powtórne kliknięcie pinezki lub przycisku metodyki odznacza ten wybór, zachowując pozostałe filtry.
+Mapa obsługuje przybliżanie, oddalanie, dopasowanie do punktów, przeciąganie, dotyk, klawiaturę i przyciski kierunków. Kółko myszy zmienia skalę mapy. Przeciąganie działa od razu, bez włączania dodatkowego trybu. Na ekranie dotykowym można przesuwać mapę palcem i zmieniać skalę gestem dwóch palców. Przyciski plus/minus i Pokaż wszystkie punkty oraz opcjonalne Sterowanie przyciskami pozostają dostępne. Wybór punktu, typu jednostki i metodyki można łączyć. Powtórne kliknięcie pinezki lub przycisku metodyki odznacza ten wybór, zachowując pozostałe filtry.
 
 ## Szkice i publikowanie
 
@@ -66,7 +66,7 @@ Wykaz: nazwa menu, nagłówki, wstęp i objaśnienie mapy.
 
 Wygląd: paleta wykazu, własne kolory, zaokrąglenia, odstępy, układ obok siebie, mapa nad listą lub sama lista. Czcionka jest dziedziczona z motywu.
 
-Mapa: lokalny schemat albo schemat z opcjonalnym podkładem OpenStreetMap, gładkie tło lub siatka punktów, kolorystyka jasna, leśna, ciepła lub własna, wysokości na komputerze i telefonie oraz etykiety i liczniki.
+Mapa: sam lokalny schemat, sama mapa drogowa albo oba widoki z przełącznikiem, gładkie tło lub siatka punktów, kolorystyka jasna, leśna, ciepła lub własna, wysokości na komputerze i telefonie oraz etykiety i liczniki.
 
 Zaawansowane: dostawca kafli, jego oznaczenia i polityka prywatności, limit przybliżenia, opcjonalne granice i lokalne linie GeoJSON. Zapis jednej zakładki zachowuje ustawienia pozostałych.
 
@@ -74,13 +74,19 @@ Kolory oznaczeń: natywna lista kolorów i kolejności oznaczeń. Typ jednostki 
 
 ## Podkład drogowy i prywatność
 
-Domyślny widok jest lokalnym schematem. Dopiero kliknięcie Mapa drogowa tworzy warstwę kafli od dostawcy. Powrót do schematu usuwa ją i zatrzymuje pobieranie nowych kafli. Zakończonych żądań nie można cofnąć. Po odświeżeniu ponownie widoczny jest schemat.
+W Ustawieniach → Mapa wybierzesz sam schemat, samą mapę drogową albo oba widoki z przełącznikiem. Schemat działa lokalnie. W trybie przełączanym kliknięcie Mapa drogowa tworzy warstwę kafli od dostawcy. W trybie samej mapy drogowej podkład uruchamia przycisk Włącz mapę drogową, poprzedzony informacją o dostawcy. Powrót do schematu usuwa ją i zatrzymuje pobieranie nowych kafli. Zakończonych żądań nie można cofnąć. Po odświeżeniu ponownie widoczny jest schemat.
 
 Wtyczka nie stosuje cookies, localStorage, analityki ani geolokalizacji. Nie przekazuje dostawcy nazw jednostek, kontaktów ani tekstu filtrów. Dostawca otrzymuje żądania kafli, w tym IP, dane przeglądarki, pochodzenie strony i obszar mapy. Przed publikacją dostosuj informację o prywatności do faktycznie używanej usługi.
 
 Domyślny adres to https://tile.openstreetmap.org/{z}/{x}/{y}.png. Dopuszczalny jest inny adres HTTPS lub własna ścieżka rozpoczynająca się od /. Obsługiwane pola: {z}, {x}, {y}, opcjonalnie {s} i {r}. Adres jest publiczny, nie wpisuj tajnych kluczy. Oznaczenie autorów OpenStreetMap pozostaje widoczne.
 
 Publiczny serwer OSM nie zapewnia SLA. Wtyczka korzysta z normalnego cache przeglądarki, bez pobierania obszarów na zapas i map offline. Dla większego ruchu wybierz odpowiedniego dostawcę.
+
+## Filtry i ikony metodyk
+
+Rozwijane filtry mają spójny wygląd z wykazem. Klawiaturą użyj strzałek, Home/End i wpisywania początku nazwy; Enter lub Tab zatwierdza, Escape zamyka bez zmiany. Wybór typu albo punktu rozwija pasujące wyniki. Filtr Typ jednostki zawiera cały katalog siedmiu typów, także pozycje bez opublikowanych rekordów; liczba przy opcji opisuje łączną liczbę jednostek tego typu w wykazie. Nie tworzy to automatycznie nowych jednostek.
+
+W Ustawieniach → Wygląd wybierzesz ikony metodyk z natywnej biblioteki mediów. Bez własnych obrazów działają proste symbole pomocnicze. Dla drużyn wielopoziomowych domyślnie łączone są cztery ikony. Własna ikona może zastąpić tę kompozycję. Oficjalne materiały identyfikacji wizualnej można przypisać w konkretnej witrynie zgodnie z jej uprawnieniami; nie są dołączone do uniwersalnej paczki. Zmiana ikony wymaga zapisania ustawień.
 
 ## Aktualizacje i zgodność danych
 
@@ -110,6 +116,8 @@ Z katalogu repozytorium wykonaj:
 php tools/check.php
 node --check assets/admin.js
 node --check assets/directory.js
+node --check assets/filter-controls.js
+node --check assets/method-icons-admin.js
 node --check assets/location-picker.js
 php tools/package.php
 ```
@@ -120,7 +128,7 @@ Jeśli lokalne PHP ma zainstalowane, ale wyłączone rozszerzenie ZIP, możesz w
 
 Przed wydaniem sprawdź na testowym WordPressie pustą instalację, zapis jednostki i obszaru, filtrowanie, mapę, klawiaturę, telefon oraz aktualizację z zachowaniem danych. Kontrola składni nie zastępuje tych prób. Nie ma automatycznych testów integracyjnych WordPressa w repozytorium.
 
-Gałąź rozwojowa to `test`. Zmianę wersji w nagłówku wtyczki, stałych `VERSION` i `ASSET_VERSION` oraz pliku `readme.txt` zapisuj razem z wpisem w `CHANGELOG.md`. Przed aktualizacją zachowaj poprzedni ZIP i pełną kopię bazy; powrót do starszego kodu po zmianie schematu może wymagać odtworzenia bazy. Problemy zgłaszaj opiekunowi przez [kaadeusz.pl](https://kaadeusz.pl/), podając wersje WordPressa, PHP i wtyczki oraz kroki odtworzenia bez danych osobowych.
+Gałąź rozwojowa to `test`. Publiczna wersja pozostaje `1.0`. Zasoby korzystają z identyfikatora treści, więc przeglądarka wczytuje poprawiony plik bez zmiany numeru wtyczki. Zmiany opisuj w `CHANGELOG.md`. Przed aktualizacją zachowaj poprzedni ZIP i pełną kopię bazy; powrót do starszego kodu po zmianie schematu może wymagać odtworzenia bazy. Problemy zgłaszaj opiekunowi przez [kaadeusz.pl](https://kaadeusz.pl/), podając wersje WordPressa, PHP i wtyczki oraz kroki odtworzenia bez danych osobowych.
 
 ## Źródła modelu i mapy
 

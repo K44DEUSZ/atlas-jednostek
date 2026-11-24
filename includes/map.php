@@ -37,13 +37,18 @@ function map_markup(array $groups, array $settings, string $id): string
         12 + ($bounds['north'] - $lat) / ($bounds['north'] - $bounds['south']) * 76,
     ];
     $lines = sanitize_lines($settings['lines']);
+    $map_mode = $settings['map_mode'] ?? (!empty($settings['road_map']) ? 'switchable' : 'schematic');
+    if (!in_array($map_mode, ['schematic', 'road', 'switchable'], true)) {
+        $map_mode = 'schematic';
+    }
     $plugin_file = dirname(__DIR__).'/atlas-jednostek.php';
     $config = [
         'bounds' => $bounds,
         'lines' => $lines,
         'lineColor' => sanitize_hex_color($settings['river_color']) ?: defaults()['river_color'],
         'maxZoom' => max(12, min(19, (int) $settings['max_zoom'])),
-        'allowRoad' => (bool) $settings['road_map'],
+        'map_mode' => $map_mode,
+        'allowRoad' => $map_mode !== 'schematic',
         'tilesUrl' => sanitize_tile_url((string) $settings['tiles_url']) ?: defaults()['tiles_url'],
         'providerName' => $settings['provider_name'],
         'providerAttribution' => $settings['provider_attribution'],
@@ -55,19 +60,22 @@ function map_markup(array $groups, array $settings, string $id): string
     $html .= '<h2 class="botud-heading" id="'.$id.'map-title">'.esc_html($settings['map_title']).'</h2>';
     $html .= '<p>Wybierz punkt, aby wyświetlić jednostki z danego obszaru.</p>';
     $html .= '<div class="botud-map-controls" hidden>';
-    if ($settings['road_map']) {
+    if ($map_mode === 'switchable') {
         $html .= '<div class="botud-map-modes" role="group" aria-label="Rodzaj mapy">';
-        $html .= '<button type="button" class="botud-control" data-map-mode="local" aria-pressed="true">Schemat</button>';
+        $html .= '<button type="button" class="botud-control" data-map-mode="schematic" aria-pressed="true">Schemat</button>';
         $html .= '<button type="button" class="botud-control" data-map-mode="road" aria-pressed="false">Mapa drogowa</button></div>';
     }
     $html .= '<div class="botud-map-navigation" role="group" aria-label="Przybliżanie mapy">';
     $html .= '<button type="button" class="botud-control botud-square" data-map-action="out" aria-label="Oddal mapę">-</button>';
-    $html .= '<button type="button" class="botud-control" data-map-action="fit">Dopasuj punkty</button>';
+    $html .= '<button type="button" class="botud-control" data-map-action="fit">Pokaż wszystkie punkty</button>';
     $html .= '<button type="button" class="botud-control botud-square" data-map-action="in" aria-label="Przybliż mapę">+</button></div></div>';
-    $html .= '<div class="botud-map" role="region" aria-label="Mapa obszarów działania" data-map-config="'.esc_attr(wp_json_encode($config)).'">';
+    $html .= '<div class="botud-map" role="region" aria-label="Mapa obszarów działania. Przesuwaj strzałkami, przybliżaj plusem i oddalaj minusem." data-map-mode="'.$map_mode.'" data-map-config="'.esc_attr(wp_json_encode($config)).'">';
     $html .= '<span class="botud-north" aria-hidden="true">↑ N</span>';
     if ($settings['map_label']) {
         $html .= '<span class="botud-area" aria-hidden="true">'.esc_html($settings['map_label']).'</span>';
+    }
+    if ($map_mode === 'road') {
+        $html .= '<div class="botud-map-activation" hidden><p>Mapa drogowa zostanie pobrana od dostawcy: '.esc_html($settings['provider_name']).'. <a href="'.esc_url($settings['provider_privacy_url'], ['https']).'">Prywatność dostawcy</a>.</p><button type="button" class="botud-control" data-map-activate>Włącz mapę drogową</button></div>';
     }
     if ($lines) {
         $html .= '<svg class="botud-geography" viewBox="0 0 1000 1000" preserveAspectRatio="none" aria-hidden="true">';
@@ -90,12 +98,12 @@ function map_markup(array $groups, array $settings, string $id): string
         $html .= '<button type="button" class="botud-pin botud-side-'.$side.' botud-mobile-'.$mobile.'" '.$filter.' data-lat="'.esc_attr((string) $group['point'][0]).'" data-lon="'.esc_attr((string) $group['point'][1]).'" title="'.esc_attr($group['name']).'" style="--botud-x:'.round($x, 2).'%;--botud-y:'.round($y, 2).'%" aria-pressed="false" aria-label="'.esc_attr($group['name'].', liczba jednostek: '.count($group['units'])).'">';
         $html .= '<span class="botud-dot" aria-hidden="true"></span><span class="botud-pin-label"><span>'.esc_html($group['name']).'</span><small>'.count($group['units']).'</small></span></button>';
     }
-    $html .= '</div><div class="botud-map-tools" hidden><details class="botud-pan"><summary>Przesuń mapę</summary><div role="group" aria-label="Przesuwanie mapy">';
+    $html .= '</div><div class="botud-map-tools" hidden><details class="botud-pan"><summary>Sterowanie przyciskami</summary><div role="group" aria-label="Przesuwanie mapy">';
     foreach (['north' => ['↑', 'Przesuń mapę na północ'], 'west' => ['←', 'Przesuń mapę na zachód'], 'east' => ['→', 'Przesuń mapę na wschód'], 'south' => ['↓', 'Przesuń mapę na południe']] as $direction => $control) {
         $html .= '<button type="button" class="botud-control botud-square" data-map-action="'.$direction.'" aria-label="'.$control[1].'">'.$control[0].'</button>';
     }
     $html .= '</div></details><output class="botud-zoom-status" aria-live="polite"></output></div>';
-    if ($settings['road_map']) {
+    if ($map_mode === 'switchable') {
         $html .= '<p class="botud-provider-note">Po włączeniu mapy drogowej podkład zostanie pobrany od dostawcy: '.esc_html($settings['provider_name']).'. <a href="'.esc_url($settings['provider_privacy_url'], ['https']).'">Prywatność dostawcy</a>.</p>';
     }
     $html .= '<p class="botud-map-error" role="status" hidden></p>';

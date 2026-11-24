@@ -14,8 +14,8 @@ foreach ($files as $relative) {
     }
 }
 $source = file_get_contents($root.'/atlas-jednostek.php');
-if (!preg_match('/^ \* Version: ([0-9]+\.[0-9]+\.[0-9]+)$/m', $source, $match)) {
-    throw new RuntimeException('Missing semantic version in plugin header.');
+if (!preg_match('/^ \* Version: ([0-9]+\.[0-9]+(?:\.[0-9]+)?)$/m', $source, $match)) {
+    throw new RuntimeException('Missing plugin version in header.');
 }
 $version = $match[1];
 if (!str_contains($source, "const VERSION = '".$version."';") || !str_contains($source, "const ASSET_VERSION = '".$version."';")) {

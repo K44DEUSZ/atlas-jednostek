@@ -9,7 +9,7 @@ function directory_data(): array
     $posts = get_posts(['post_type' => TYPE, 'post_status' => 'publish', 'numberposts' => -1, 'orderby' => ['menu_order' => 'ASC', 'title' => 'ASC']]);
     $groups = [];
     $kinds = [];
-    $types = [];
+    $type_counts = array_fill_keys(array_keys(unit_types()), 0);
     $units = [];
     foreach ($posts as $post) {
         $fields = unit_data($post->ID);
@@ -18,7 +18,7 @@ function directory_data(): array
         $unit = ['post' => $post, 'kind' => $kind, 'fields' => $fields, 'filter_keys' => unit_filter_keys($fields)];
         $units[$post->ID] = $unit;
         if (isset(unit_types()[$fields['unit_type']])) {
-            $types[$fields['unit_type']] = unit_types()[$fields['unit_type']];
+            $type_counts[$fields['unit_type']]++;
         }
         foreach ($unit['filter_keys'] as $key) {
             $term = get_term_by('slug', $key, KIND);
@@ -70,7 +70,7 @@ function directory_data(): array
         $points[$key]['units'][] = $unit;
         $points[$key]['unit_ids'][] = $unit['post']->ID;
     }
-    return ['groups' => $groups, 'kinds' => $kinds, 'types' => array_intersect_key(unit_types(), $types), 'points' => $points, 'total' => count($posts)];
+    return ['groups' => $groups, 'kinds' => $kinds, 'types' => unit_types(), 'type_counts' => $type_counts, 'points' => $points, 'total' => count($posts)];
 }
 
 function card(array $unit): string
@@ -135,7 +135,7 @@ function render_directory(): string
     if (!$data['total']) {
         return '<div class="botud"><p>Nie ma jeszcze opublikowanych jednostek.</p></div>';
     }
-    wp_enqueue_script('atlas-jednostek');
+    wp_enqueue_script('atlas-jednostek-filters');
     $id = wp_unique_id('botud-');
     $groups = $data['groups'];
     $kinds = $data['kinds'];
@@ -164,19 +164,19 @@ function render_directory(): string
     foreach ($kinds as $slug => $kind) {
         $term = $kind['term'];
         $color = sanitize_hex_color(get_term_meta($term->term_id, '_botud_color', true)) ?: '#687189';
-        $html .= '<button type="button" class="botud-tag" style="--botud-kind:'.esc_attr($color).'" data-kind-filter="'.esc_attr($slug).'" aria-pressed="false">'.esc_html($kind['label']).' <span>'.count($kind['ids']).'</span><span class="botud-close" aria-hidden="true">×</span></button>';
+        $html .= '<button type="button" class="botud-tag" style="--botud-kind:'.esc_attr($color).'" data-kind-filter="'.esc_attr($slug).'" aria-pressed="false">'.methodology_icon($slug).'<span class="botud-method-label">'.esc_html($kind['label']).'</span><span class="botud-method-count">'.count($kind['ids']).'</span><span class="botud-close" aria-hidden="true">×</span></button>';
     }
     $html .= '</div><div class="botud-filters" hidden><div class="botud-filter-field"><label for="'.$id.'place">Obszar działania</label><select id="'.$id.'place" data-place-select><option value="">Wszystkie obszary</option>';
     foreach ($groups as $slug => $group) {
-        $html .= '<option value="'.esc_attr($slug).'">'.esc_html($group['name']).'</option>';
+        $html .= '<option value="'.esc_attr($slug).'" data-count="'.count($group['units']).'">'.esc_html($group['name']).'</option>';
     }
     $html .= '</select></div><div class="botud-filter-field"><label for="'.$id.'type">Typ jednostki</label><select id="'.$id.'type" data-type-select><option value="">Wszystkie typy</option>';
     foreach ($data['types'] as $key => $label) {
-        $html .= '<option value="'.esc_attr($key).'">'.esc_html($label).'</option>';
+        $html .= '<option value="'.esc_attr($key).'" data-count="'.$data['type_counts'][$key].'">'.esc_html($label).'</option>';
     }
     $html .= '</select></div><div class="botud-filter-field"><label for="'.$id.'kind">Metodyka</label><select id="'.$id.'kind" data-kind-select><option value="">Wszystkie metodyki</option>';
     foreach ($kinds as $slug => $kind) {
-        $html .= '<option value="'.esc_attr($slug).'">'.esc_html($kind['label']).'</option>';
+        $html .= '<option value="'.esc_attr($slug).'" data-count="'.count($kind['ids']).'">'.esc_html($kind['label']).'</option>';
     }
     $html .= '</select></div><button type="button" class="botud-reset">Wyczyść filtry</button></div><div class="botud-layout">';
     $html .= map_markup($data['points'], $settings, $id);

@@ -3,7 +3,7 @@ Contributors: k44deusz
 Tags: directory, map, scouting
 Requires at least: 6.6
 Requires PHP: 8.1
-Stable tag: 1.0.1
+Stable tag: 1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 
@@ -27,8 +27,5 @@ Przed aktualizacją wykonaj pełną kopię WordPressa. Przy przejściu ze stareg
 
 == Changelog ==
 
-= 1.0.1 =
-Samodzielny pakiet atlas-jednostek, zgodność dotychczasowych danych, dokumentacja i narzędzia wydania.
-
 = 1.0 =
-Wykaz, typy jednostek, metodyki, kontakty, obszary, mapa i wybór miejsca w panelu.
+Wykaz, siedem typów jednostek, metodyki z ikonami, kontakty i obszary. Bezpośrednia obsługa mapy myszą i gestami, trzy tryby widoku, rozwijane filtry i wybór miejsca w panelu. Samodzielny pakiet, dokumentacja i narzędzia wydania.

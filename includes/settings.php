@@ -18,8 +18,8 @@ function settings_section_fields(string $tab): array
 {
     return match ($tab) {
         'directory' => ['menu_label', 'title', 'intro', 'map_title', 'map_note'],
-        'appearance' => ['accent', 'surface', 'card_background', 'radius', 'density', 'layout', 'show_kind_filters', 'expand_groups'],
-        'map' => ['road_map', 'map_palette', 'schematic_style', 'canvas_background', 'river_color', 'map_height', 'map_height_mobile', 'show_labels', 'show_counts'],
+        'appearance' => ['accent', 'surface', 'card_background', 'radius', 'density', 'layout', 'show_kind_filters', 'expand_groups', 'method_icons'],
+        'map' => ['map_mode', 'map_palette', 'schematic_style', 'canvas_background', 'river_color', 'map_height', 'map_height_mobile', 'show_labels', 'show_counts'],
         'advanced' => ['max_zoom', 'map_label', 'provider_name', 'tiles_url', 'provider_attribution', 'provider_attribution_url', 'provider_privacy_url', 'search_enabled', 'search_url', 'search_provider_name', 'search_info_url'],
         default => [],
     };
@@ -100,12 +100,15 @@ function settings_tabs(): void
         }
         echo '</select></p><table class="form-table">';
         foreach (settings_section_fields($tab) as $key) {
-            appearance_control($key, $value);
+            if ($key !== 'method_icons') {
+                appearance_control($key, $value);
+            }
         }
         echo '</table>';
+        method_icon_settings($value);
     } elseif ($tab === 'map') {
-        echo '<p>Schemat działa lokalnie. Dodatkowy podkład OpenStreetMap pobiera się dopiero po kliknięciu „Mapa drogowa” przez odwiedzającego.</p><table class="form-table">';
-        setting_control('road_map', 'Dostępny podkład', $value['road_map'] ? '1' : '0', 'select', ['0' => 'Tylko lokalny schemat', '1' => 'Schemat i opcjonalna mapa drogowa OpenStreetMap']);
+        echo '<p>Wybierz widok dostępny dla odwiedzających. Schemat działa lokalnie. Mapa drogowa pobiera podkład po świadomym włączeniu przez odwiedzającego. Przeciąganie, kółko myszy i gesty działają bez dodatkowego przełącznika.</p><table class="form-table">';
+        appearance_control('map_mode', $value);
         setting_control('schematic_style', 'Styl lokalnego schematu', $value['schematic_style'], 'select', ['dots' => 'Delikatna siatka punktów', 'plain' => 'Gładkie tło']);
         setting_control('map_palette', 'Kolorystyka schematu', $value['map_palette'], 'select', ['custom' => 'Własne kolory', 'navy' => 'Jasna', 'forest' => 'Leśna', 'warm' => 'Ciepła']);
         echo '</table><div data-botud-custom-map><table class="form-table">';

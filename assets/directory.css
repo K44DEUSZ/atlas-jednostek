@@ -82,6 +82,8 @@
   opacity: 1;
 }
 .botud-filters {
+  position: relative;
+  z-index: 20;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr)) auto;
   align-items: end;
@@ -95,6 +97,185 @@
   display: grid;
   gap: 6px;
   min-width: 0;
+}
+.botud-select {
+  position: relative;
+  min-width: 0;
+}
+.botud-select.is-open {
+  z-index: 30;
+}
+.botud .botud-select-trigger {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 42px 12px 14px;
+  border: 1px solid #8994af;
+  border-radius: 8px;
+  background: #fff;
+  color: #182142;
+  font: inherit;
+  font-size: 16px;
+  line-height: 1.4;
+  text-align: left;
+  cursor: pointer;
+}
+.botud-select-trigger::after {
+  content: '';
+  position: absolute;
+  right: 17px;
+  top: calc(50% - 5px);
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg);
+}
+.botud-select-trigger[aria-expanded='true'] {
+  border-color: var(--botud-accent);
+  box-shadow: 0 0 0 1px var(--botud-accent);
+}
+.botud-select-trigger[aria-expanded='true']::after {
+  top: calc(50% - 1px);
+  transform: rotate(225deg);
+}
+.botud-select-value {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.botud-select-list {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  max-height: min(320px, 45vh);
+  padding: 6px;
+  border: 1px solid #c5cddd;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 12px 28px #18214224;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  color: #182142;
+}
+.botud-select.opens-up .botud-select-list {
+  top: auto;
+  bottom: calc(100% + 8px);
+}
+.botud-select-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 44px;
+  padding: 10px;
+  border-radius: 6px;
+  font-size: 16px;
+  line-height: 1.4;
+  cursor: pointer;
+}
+.botud-select-option.is-active {
+  background: #eef0f7;
+  outline: 2px solid var(--botud-accent);
+  outline-offset: -2px;
+}
+.botud-select-option > span:first-child {
+  flex: 1;
+}
+.botud-select-option::after {
+  content: '';
+  flex: 0 0 16px;
+  width: 16px;
+}
+.botud-select-option[aria-selected='true'] {
+  background: var(--botud-accent);
+  color: var(--botud-button-ink);
+}
+.botud-select-option[aria-selected='true']::after {
+  content: '✓';
+  font-weight: 700;
+}
+@media (forced-colors: active) {
+  .botud-select-list,
+  .botud .botud-select-trigger {
+    border-color: CanvasText;
+  }
+  .botud-select-option.is-active {
+    outline-color: Highlight;
+  }
+}
+.botud-option-count {
+  flex-shrink: 0;
+  min-width: 24px;
+  padding: 2px 6px;
+  border-radius: 12px;
+  background: #1821420d;
+  font-size: 13px;
+  text-align: center;
+}
+.botud-select-option[aria-selected='true'] .botud-option-count {
+  background: #ffffff26;
+}
+.botud .botud-method-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 32px;
+  width: 32px;
+  height: 32px;
+  overflow: hidden;
+  border-radius: 4px;
+}
+.botud-method-icon > img,
+.botud-method-icon > svg {
+  display: block;
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+.botud .botud-method-icon--combined {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2px;
+}
+.botud-method-icon-part,
+.botud-method-icon-part :is(img, svg) {
+  display: block;
+  width: 15px;
+  height: 15px;
+}
+.botud .botud-kinds > .botud-tag {
+  min-height: 52px;
+  padding: 7px 10px;
+  border-left: 0;
+  border-bottom: 3px solid var(--botud-kind, #687189);
+  border-radius: 8px;
+  font-size: 14px;
+}
+.botud-method-count {
+  font-size: 13px;
+}
+.botud-map-activation {
+  position: absolute;
+  z-index: 900;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 24px;
+  background: #f3f6f5f2;
+  color: #182142;
+  text-align: center;
+}
+.botud-map-activation p {
+  max-width: 44ch;
+  margin: 0;
+  font-size: 16px;
 }
 .botud-filters label {
   color: var(--botud-ink);

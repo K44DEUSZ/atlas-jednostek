@@ -94,7 +94,7 @@ add_action('admin_enqueue_scripts', static function (): void {
         return;
     }
     $file = dirname(__DIR__).'/atlas-jednostek.php';
-    wp_enqueue_script('atlas-jednostek-admin', plugins_url('assets/admin.js', $file), [], ASSET_VERSION, true);
+    wp_enqueue_script('atlas-jednostek-admin', plugins_url('assets/admin.js', $file), [], asset_version('assets/admin.js'), true);
     $roles = [];
     foreach (unit_types() as $type => $unused) {
         foreach (leader_roles($type) as $role => $label) {

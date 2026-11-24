@@ -91,7 +91,10 @@
       ).matches;
       map = leaflet.map(mapElement, {
         zoomControl: false,
-        scrollWheelZoom: false,
+        dragging: true,
+        scrollWheelZoom: true,
+        touchZoom: true,
+        keyboard: true,
         zoomAnimation: !reducedMotion,
         fadeAnimation: !reducedMotion,
         markerZoomAnimation: !reducedMotion,
@@ -205,7 +208,8 @@
               west: [-offset, 0],
               east: [offset, 0],
             };
-            map.panBy(directions[action], { animate: !reducedMotion });
+            if (directions[action])
+              map.panBy(directions[action], { animate: !reducedMotion });
           }
           updateView();
         });
@@ -218,6 +222,41 @@
 
       // No external layer exists until the visitor explicitly chooses the road map.
       let tiles;
+      const mapMode =
+        options.map_mode ||
+        mapElement.dataset.mapMode ||
+        (options.allowRoad ? 'switchable' : 'schematic');
+      const modeButtons = [
+        ...directory.querySelectorAll('button[data-map-mode]'),
+      ];
+      const activation = mapElement.querySelector('.botud-map-activation');
+      if (activation) {
+        leaflet.DomEvent.disableClickPropagation(activation);
+        leaflet.DomEvent.disableScrollPropagation(activation);
+      }
+      function updateMode(isRoad) {
+        mapElement.classList.toggle('is-road-map', isRoad);
+        mapElement.dataset.activeMapMode = isRoad ? 'road' : 'schematic';
+        modeButtons.forEach((button) =>
+          button.setAttribute(
+            'aria-pressed',
+            String((button.dataset.mapMode === 'road') === isRoad)
+          )
+        );
+        if (activation) activation.hidden = isRoad || mapMode !== 'road';
+      }
+      function showSchematic(error = false) {
+        tiles?.off('tileerror');
+        tiles?.remove();
+        tiles = null;
+        lines.addTo(map);
+        updateMode(false);
+        errorMessage.hidden = !error;
+        if (error) {
+          errorMessage.textContent =
+            'Nie udało się pobrać podkładu mapy. Pokazujemy schemat. Punkty i wykaz nadal działają.';
+        }
+      }
       const sourceCredit =
         '© ' +
         attributionLink(
@@ -235,42 +274,42 @@
               )
             : providerText.innerHTML)
         : '';
-      directory.querySelectorAll('[data-map-mode]').forEach((button) => {
+      function showRoad() {
+        if (mapMode === 'schematic' || !options.allowRoad || tiles) return;
+        try {
+          const requestedTiles = leaflet.tileLayer(options.tilesUrl, {
+            maxZoom: options.maxZoom,
+            attribution: sourceCredit + providerCredit,
+            referrerPolicy: 'strict-origin-when-cross-origin',
+            updateWhenIdle: true,
+            updateWhenZooming: false,
+            keepBuffer: 0,
+            detectRetina: false,
+          });
+          requestedTiles.on('tileerror', () => {
+            if (tiles === requestedTiles) showSchematic(true);
+          });
+          tiles = requestedTiles;
+          lines.remove();
+          errorMessage.hidden = true;
+          const moveFocus = activation?.contains(document.activeElement);
+          updateMode(true);
+          requestedTiles.addTo(map);
+          if (moveFocus) mapElement.focus({ preventScroll: true });
+        } catch {
+          showSchematic(true);
+        }
+      }
+      modeButtons.forEach((button) => {
         button.addEventListener('click', () => {
-          const isRoad = button.dataset.mapMode === 'road';
-          if (isRoad === mapElement.classList.contains('is-road-map')) return;
-          if (isRoad) {
-            if (!options.allowRoad) return;
-            tiles = leaflet.tileLayer(options.tilesUrl, {
-              maxZoom: options.maxZoom,
-              attribution: sourceCredit + providerCredit,
-              referrerPolicy: 'strict-origin-when-cross-origin',
-              updateWhenIdle: true,
-              updateWhenZooming: false,
-              keepBuffer: 0,
-              detectRetina: false,
-            });
-            tiles.on('tileerror', () => {
-              errorMessage.textContent =
-                'Nie udało się pobrać części podkładu. Punkty i wykaz nadal działają. Możesz wrócić do schematu.';
-              errorMessage.hidden = false;
-            });
-            lines.remove();
-            tiles.addTo(map);
-          } else {
-            tiles?.remove();
-            tiles = null;
-            lines.addTo(map);
-            errorMessage.hidden = true;
-          }
-          mapElement.classList.toggle('is-road-map', isRoad);
-          directory
-            .querySelectorAll('[data-map-mode]')
-            .forEach((mode) =>
-              mode.setAttribute('aria-pressed', String(mode === button))
-            );
+          if (button.dataset.mapMode === 'road') showRoad();
+          else showSchematic();
         });
       });
+      activation
+        ?.querySelector('[data-map-activate]')
+        ?.addEventListener('click', showRoad);
+      updateMode(false);
       directory.querySelector('.botud-map-controls').hidden = false;
       directory.querySelector('.botud-map-tools').hidden = false;
       updateView();
@@ -344,8 +383,13 @@
         group.hidden = count === 0;
         group.querySelector('.botud-locality-count').textContent = count;
         group.open =
-          Boolean(place.value || kind.value || options.expandGroups) &&
-          count > 0;
+          Boolean(
+            place.value ||
+            kind.value ||
+            type?.value ||
+            selectedPoint ||
+            options.expandGroups
+          ) && count > 0;
       });
       pins.forEach((pin) => {
         const candidates = pin.dataset.placeFilter

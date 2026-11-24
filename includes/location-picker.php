@@ -43,7 +43,7 @@ add_action('admin_enqueue_scripts', static function (): void {
     $plugin = dirname(__DIR__).'/atlas-jednostek.php';
     wp_enqueue_style('atlas-jednostek-picker-leaflet', plugins_url('assets/vendor/leaflet/leaflet.css', $plugin), [], '1.9.4');
     wp_enqueue_script('atlas-jednostek-picker-leaflet', plugins_url('assets/vendor/leaflet/leaflet.js', $plugin), [], '1.9.4', true);
-    wp_enqueue_script('atlas-jednostek-location-picker', plugins_url('assets/location-picker.js', $plugin), ['atlas-jednostek-picker-leaflet'], ASSET_VERSION, true);
+    wp_enqueue_script('atlas-jednostek-location-picker', plugins_url('assets/location-picker.js', $plugin), ['atlas-jednostek-picker-leaflet'], asset_version('assets/location-picker.js'), true);
     $settings = settings();
     $points = [];
     foreach (get_terms(['taxonomy' => PLACE, 'hide_empty' => false]) as $term) {
