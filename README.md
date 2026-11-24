@@ -120,7 +120,7 @@ Jeśli lokalne PHP ma zainstalowane, ale wyłączone rozszerzenie ZIP, możesz w
 
 Przed wydaniem sprawdź na testowym WordPressie pustą instalację, zapis jednostki i obszaru, filtrowanie, mapę, klawiaturę, telefon oraz aktualizację z zachowaniem danych. Kontrola składni nie zastępuje tych prób. Nie ma automatycznych testów integracyjnych WordPressa w repozytorium.
 
-Gałąź rozwojowa to `develop`. Zmianę wersji w nagłówku wtyczki, stałych `VERSION` i `ASSET_VERSION` oraz pliku `readme.txt` zapisuj razem z wpisem w `CHANGELOG.md`. Przed aktualizacją zachowaj poprzedni ZIP i pełną kopię bazy; powrót do starszego kodu po zmianie schematu może wymagać odtworzenia bazy. Problemy zgłaszaj opiekunowi przez [kaadeusz.pl](https://kaadeusz.pl/), podając wersje WordPressa, PHP i wtyczki oraz kroki odtworzenia bez danych osobowych.
+Gałąź rozwojowa to `test`. Zmianę wersji w nagłówku wtyczki, stałych `VERSION` i `ASSET_VERSION` oraz pliku `readme.txt` zapisuj razem z wpisem w `CHANGELOG.md`. Przed aktualizacją zachowaj poprzedni ZIP i pełną kopię bazy; powrót do starszego kodu po zmianie schematu może wymagać odtworzenia bazy. Problemy zgłaszaj opiekunowi przez [kaadeusz.pl](https://kaadeusz.pl/), podając wersje WordPressa, PHP i wtyczki oraz kroki odtworzenia bez danych osobowych.
 
 ## Źródła modelu i mapy
 
