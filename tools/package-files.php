@@ -1,0 +1,32 @@
+<?php
+
+declare(strict_types=1);
+
+return [
+    'atlas-jednostek.php',
+    'LICENSE.txt',
+    'README.md',
+    'readme.txt',
+    'assets/admin.js',
+    'assets/directory.css',
+    'assets/directory.js',
+    'assets/location-picker.js',
+    'assets/vendor/leaflet/LICENSE',
+    'assets/vendor/leaflet/leaflet.css',
+    'assets/vendor/leaflet/leaflet.js',
+    'assets/vendor/leaflet/images/layers-2x.png',
+    'assets/vendor/leaflet/images/layers.png',
+    'assets/vendor/leaflet/images/marker-icon-2x.png',
+    'assets/vendor/leaflet/images/marker-icon.png',
+    'assets/vendor/leaflet/images/marker-shadow.png',
+    'includes/admin.php',
+    'includes/editor.php',
+    'includes/list-table.php',
+    'includes/location-picker.php',
+    'includes/map.php',
+    'includes/migrations.php',
+    'includes/model.php',
+    'includes/organization.php',
+    'includes/render.php',
+    'includes/settings.php',
+];
