@@ -1,3 +1,4 @@
 * text=auto eol=lf
+assets/vendor/leaflet/** -text -whitespace
 *.png binary
 *.zip binary
