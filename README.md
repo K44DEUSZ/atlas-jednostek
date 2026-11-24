@@ -88,6 +88,8 @@ Rozwijane filtry mają spójny wygląd z wykazem. Klawiaturą użyj strzałek, H
 
 W Ustawieniach → Wygląd wybierzesz ikony metodyk z natywnej biblioteki mediów. Bez własnych obrazów działają proste symbole pomocnicze. Dla drużyn wielopoziomowych domyślnie łączone są cztery ikony. Własna ikona może zastąpić tę kompozycję. Oficjalne materiały identyfikacji wizualnej można przypisać w konkretnej witrynie zgodnie z jej uprawnieniami; nie są dołączone do uniwersalnej paczki. Zmiana ikony wymaga zapisania ustawień.
 
+Przyciski i filtr metodyk pojawiają się dopiero po wyborze typu „Drużyny i gromady”. Kręgi mają filtr „Rodzaj kręgu”, a kluby filtry „Rodzaj klubu” i „Specjalność”, korzystające z danych wprowadzonych w panelu. Wybór „Wszystkie typy”, szczepu, związku drużyn lub hufca ukrywa filtry metodyczne. Zmiana typu czyści poprzednią metodykę i kategorie zależne. Lista kategorii obejmuje wyłącznie wartości występujące w opublikowanych jednostkach. Dawny odnośnik do metodyki automatycznie wybiera typ drużyn i gromad.
+
 ## Aktualizacje i zgodność danych
 
 Przed aktualizacją wykonaj pełną kopię WordPressa. Aktualizacje są ręczne przez ZIP. Wtyczka nie ma serwera aktualizacji ani kluczy licencyjnych. Dezaktywacja i usunięcie jej plików zachowują dane do odzyskania.

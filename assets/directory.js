@@ -331,6 +331,10 @@
     const place = directory.querySelector('[data-place-select]');
     const kind = directory.querySelector('[data-kind-select]');
     const type = directory.querySelector('[data-type-select]');
+    const facets = [...directory.querySelectorAll('[data-facet-select]')];
+    const contextFields = [
+      ...directory.querySelectorAll('[data-context-type]'),
+    ];
     let selectedPoint = null;
     if (!place || !kind) return;
     const options = readOptions(directory, 'options') || {};
@@ -341,11 +345,14 @@
     const kindButtons = [...directory.querySelectorAll('[data-kind-filter]')];
     const legacyHashes = options.legacyHashes || {};
     const initialKind = legacyHashes[location.hash.slice(1)];
-    if ([...kind.options].some((option) => option.value === initialKind))
+    if (
+      initialKind &&
+      [...kind.options].some((option) => option.value === initialKind)
+    ) {
+      if (type) type.value = 'troop';
       kind.value = initialKind;
+    }
     directory.querySelector('.botud-filters').hidden = false;
-    directory.querySelector('.botud-kinds').hidden =
-      options.showKindFilters === false;
     const mapElement = directory.querySelector('.botud-map');
     if (mapElement) {
       new ResizeObserver(() => fitLabels(mapElement, pins)).observe(mapElement);
@@ -356,11 +363,39 @@
       const keys = (unit.dataset.methods || unit.dataset.kind || '').split(' ');
       return (
         (!type?.value || type.value === unit.dataset.unitType) &&
-        (!kind.value || keys.includes(kind.value))
+        (!kind.value || keys.includes(kind.value)) &&
+        facets.every(
+          (select) =>
+            !select.value ||
+            unit.dataset[select.dataset.unitField] === select.value
+        )
       );
     }
 
+    function updateContext() {
+      const activeType = type?.value || '';
+      contextFields.forEach((field) => {
+        const select = field.querySelector('select');
+        const visible =
+          field.dataset.contextType === activeType && select.options.length > 1;
+        field.hidden = !visible;
+        select.disabled = !visible;
+        if (!visible) select.value = '';
+      });
+      directory.querySelector('.botud-kinds').hidden =
+        activeType !== 'troop' ||
+        options.showKindFilters === false ||
+        !kindButtons.length;
+      const columns = [
+        ...directory.querySelectorAll('.botud-filter-field'),
+      ].filter((field) => !field.hidden).length;
+      directory
+        .querySelector('.botud-filters')
+        .style.setProperty('--botud-filter-columns', columns);
+    }
+
     function filter() {
+      updateContext();
       const visible = new Set();
       const selectedIds = selectedPoint
         ? new Set(selectedPoint.dataset.unitIds.split(' '))
@@ -386,6 +421,7 @@
           Boolean(
             place.value ||
             kind.value ||
+            facets.some((select) => select.value) ||
             type?.value ||
             selectedPoint ||
             options.expandGroups
@@ -429,6 +465,9 @@
         )
       );
       const selection = directory.querySelector('.botud-selection');
+      const facet = facets.find((select) => select.value);
+      const hasFilters =
+        place.value || kind.value || type?.value || facet || selectedPoint;
       if (selection) {
         const label = selectedPoint
           ? selectedPoint.querySelector('.botud-pin-label > span').textContent
@@ -436,19 +475,16 @@
             ? place.selectedOptions[0].textContent
             : kind.value
               ? kind.selectedOptions[0].textContent
-              : type?.value
-                ? type.selectedOptions[0].textContent
-                : 'Wszystkie obszary';
+              : facet
+                ? facet.selectedOptions[0].textContent
+                : type?.value
+                  ? type.selectedOptions[0].textContent
+                  : 'Wszystkie obszary';
         selection.textContent =
-          label +
-          (place.value || kind.value || type?.value || selectedPoint
-            ? ' · Liczba jednostek: ' + visible.size
-            : '');
+          label + (hasFilters ? ' · Liczba jednostek: ' + visible.size : '');
       }
       const showResults = directory.querySelector('.botud-show-results');
-      if (showResults)
-        showResults.hidden =
-          !place.value && !kind.value && !type?.value && !selectedPoint;
+      if (showResults) showResults.hidden = !hasFilters;
       directory.querySelector('.botud-count').textContent =
         'Liczba jednostek: ' + visible.size;
       directory.querySelector('.botud-empty').hidden = visible.size !== 0;
@@ -462,9 +498,15 @@
       if (mapElement) fitLabels(mapElement, pins);
       directory.dispatchEvent(new Event('botud:filter'));
     }
-    [place, kind, type].filter(Boolean).forEach((select) =>
+    [place, kind, type, ...facets].filter(Boolean).forEach((select) =>
       select.addEventListener('change', () => {
         if (select === place) selectedPoint = null;
+        if (select === type) {
+          kind.value = '';
+          facets.forEach((facet) => {
+            facet.value = '';
+          });
+        }
         filter();
       })
     );
@@ -496,6 +538,9 @@
       place.value = '';
       kind.value = '';
       if (type) type.value = '';
+      facets.forEach((facet) => {
+        facet.value = '';
+      });
       selectedPoint = null;
       filter();
     });

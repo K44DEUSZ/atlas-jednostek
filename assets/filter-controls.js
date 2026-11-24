@@ -68,6 +68,8 @@
       let searchAt = 0;
 
       function sync() {
+        trigger.disabled = select.disabled;
+        if (expanded && select.disabled) close(false);
         value.textContent = select.selectedOptions[0]?.label || '';
         rows.forEach((row, index) => {
           row.setAttribute(

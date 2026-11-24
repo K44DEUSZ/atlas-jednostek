@@ -49,6 +49,15 @@ function specialties(): array
     ];
 }
 
+function context_facets(): array
+{
+    return [
+        'circle_type' => ['type' => 'circle', 'field' => 'circleType', 'label' => 'Rodzaj kręgu', 'empty' => 'Wszystkie rodzaje kręgów', 'choices' => circle_types()],
+        'club_type' => ['type' => 'club', 'field' => 'clubType', 'label' => 'Rodzaj klubu', 'empty' => 'Wszystkie rodzaje klubów', 'choices' => club_types()],
+        'specialty' => ['type' => 'club', 'field' => 'specialty', 'label' => 'Specjalność', 'empty' => 'Wszystkie specjalności', 'choices' => specialties()],
+    ];
+}
+
 function leader_roles(string $type): array
 {
     if ($type === 'circle') {

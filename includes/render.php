@@ -11,6 +11,11 @@ function directory_data(): array
     $kinds = [];
     $types = filter_unit_types();
     $type_counts = array_fill_keys(array_keys($types), 0);
+    $facets = context_facets();
+    foreach ($facets as &$facet) {
+        $facet['counts'] = array_fill_keys(array_keys($facet['choices']), 0);
+    }
+    unset($facet);
     $units = [];
     foreach ($posts as $post) {
         $fields = unit_data($post->ID);
@@ -22,7 +27,14 @@ function directory_data(): array
         if (isset($type_counts[$filter_type])) {
             $type_counts[$filter_type]++;
         }
-        foreach ($unit['filter_keys'] as $key) {
+        foreach ($facets as $key => &$facet) {
+            $value = $fields[$key] ?? '';
+            if ($filter_type === $facet['type'] && isset($facet['counts'][$value])) {
+                $facet['counts'][$value]++;
+            }
+        }
+        unset($facet);
+        foreach ($filter_type === 'troop' ? $unit['filter_keys'] : [] as $key) {
             $term = get_term_by('slug', $key, KIND);
             if ($term) {
                 $kinds[$key]['term'] = $term;
@@ -73,7 +85,7 @@ function directory_data(): array
         $points[$key]['unit_ids'][] = $unit['post']->ID;
     }
     $types = array_intersect_key($types, array_filter($type_counts));
-    return ['groups' => $groups, 'kinds' => $kinds, 'types' => $types, 'type_counts' => $type_counts, 'points' => $points, 'total' => count($posts)];
+    return ['groups' => $groups, 'kinds' => $kinds, 'types' => $types, 'type_counts' => $type_counts, 'facets' => $facets, 'points' => $points, 'total' => count($posts)];
 }
 
 function card(array $unit): string
@@ -81,7 +93,7 @@ function card(array $unit): string
     $post = $unit['post'];
     $fields = $unit['fields'];
     $kind = $unit['kind'];
-    $html = '<article class="botud-unit" data-unit-id="'.$post->ID.'" data-kind="'.esc_attr($kind ? $kind->slug : '').'" data-methods="'.esc_attr(implode(' ', unit_filter_keys($fields))).'" data-unit-type="'.esc_attr(unit_filter_type($fields)).'">';
+    $html = '<article class="botud-unit" data-unit-id="'.$post->ID.'" data-kind="'.esc_attr($kind ? $kind->slug : '').'" data-methods="'.esc_attr(implode(' ', unit_filter_keys($fields))).'" data-unit-type="'.esc_attr(unit_filter_type($fields)).'" data-circle-type="'.esc_attr($fields['circle_type'] ?? '').'" data-club-type="'.esc_attr($fields['club_type'] ?? '').'" data-specialty="'.esc_attr($fields['specialty'] ?? '').'">';
     $image = get_the_post_thumbnail($post, 'medium', ['class' => 'botud-unit-image', 'loading' => 'lazy']);
     if ($image) {
         $html .= $image;
@@ -177,11 +189,24 @@ function render_directory(): string
     foreach ($data['types'] as $key => $label) {
         $html .= '<option value="'.esc_attr($key).'" data-count="'.$data['type_counts'][$key].'">'.esc_html($label).'</option>';
     }
-    $html .= '</select></div><div class="botud-filter-field"><label for="'.$id.'kind">Metodyka</label><select id="'.$id.'kind" data-kind-select><option value="">Wszystkie metodyki</option>';
+    $html .= '</select></div><div class="botud-filter-field" data-context-type="troop" hidden><label for="'.$id.'kind">Metodyka</label><select id="'.$id.'kind" data-kind-select><option value="">Wszystkie metodyki</option>';
     foreach ($kinds as $slug => $kind) {
         $html .= '<option value="'.esc_attr($slug).'" data-count="'.count($kind['ids']).'">'.esc_html($kind['label']).'</option>';
     }
-    $html .= '</select></div><button type="button" class="botud-reset">Wyczyść filtry</button></div><div class="botud-layout">';
+    $html .= '</select></div>';
+    foreach ($data['facets'] as $key => $facet) {
+        $choices = array_intersect_key($facet['choices'], array_filter($facet['counts']));
+        if (!$choices) {
+            continue;
+        }
+        $field_id = $id.str_replace('_', '-', $key);
+        $html .= '<div class="botud-filter-field" data-context-type="'.esc_attr($facet['type']).'" hidden><label for="'.$field_id.'">'.esc_html($facet['label']).'</label><select id="'.$field_id.'" data-facet-select data-unit-field="'.esc_attr($facet['field']).'"><option value="">'.esc_html($facet['empty']).'</option>';
+        foreach ($choices as $value => $label) {
+            $html .= '<option value="'.esc_attr($value).'" data-count="'.$facet['counts'][$value].'">'.esc_html($label).'</option>';
+        }
+        $html .= '</select></div>';
+    }
+    $html .= '<button type="button" class="botud-reset">Wyczyść filtry</button></div><div class="botud-layout">';
     $html .= map_markup($data['points'], $settings, $id);
     $html .= '<section class="botud-results" id="'.$id.'results" tabindex="-1" aria-labelledby="'.$id.'results-title"><h2 class="botud-heading" id="'.$id.'results-title">'.esc_html($settings['title']).'</h2><p class="botud-count" role="status" aria-live="polite">Liczba jednostek: '.$data['total'].'</p><p class="botud-empty" hidden>Brak jednostek dla wybranych filtrów. Zmień wybrane filtry.</p><div class="botud-localities">';
     foreach ($groups as $slug => $group) {

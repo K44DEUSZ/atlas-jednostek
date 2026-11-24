@@ -85,7 +85,7 @@
   position: relative;
   z-index: 20;
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr)) auto;
+  grid-template-columns: repeat(var(--botud-filter-columns, 3), 1fr) auto;
   align-items: end;
   gap: 16px;
   padding: 20px;
