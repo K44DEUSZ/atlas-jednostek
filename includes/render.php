@@ -9,7 +9,8 @@ function directory_data(): array
     $posts = get_posts(['post_type' => TYPE, 'post_status' => 'publish', 'numberposts' => -1, 'orderby' => ['menu_order' => 'ASC', 'title' => 'ASC']]);
     $groups = [];
     $kinds = [];
-    $type_counts = array_fill_keys(array_keys(unit_types()), 0);
+    $types = filter_unit_types();
+    $type_counts = array_fill_keys(array_keys($types), 0);
     $units = [];
     foreach ($posts as $post) {
         $fields = unit_data($post->ID);
@@ -17,8 +18,9 @@ function directory_data(): array
         $kind = get_term_by('slug', unit_classification($fields), KIND) ?: (!is_wp_error($terms) && $terms ? $terms[0] : null);
         $unit = ['post' => $post, 'kind' => $kind, 'fields' => $fields, 'filter_keys' => unit_filter_keys($fields)];
         $units[$post->ID] = $unit;
-        if (isset(unit_types()[$fields['unit_type']])) {
-            $type_counts[$fields['unit_type']]++;
+        $filter_type = unit_filter_type($fields);
+        if (isset($type_counts[$filter_type])) {
+            $type_counts[$filter_type]++;
         }
         foreach ($unit['filter_keys'] as $key) {
             $term = get_term_by('slug', $key, KIND);
@@ -70,7 +72,7 @@ function directory_data(): array
         $points[$key]['units'][] = $unit;
         $points[$key]['unit_ids'][] = $unit['post']->ID;
     }
-    $types = array_intersect_key(unit_types(), array_filter($type_counts));
+    $types = array_intersect_key($types, array_filter($type_counts));
     return ['groups' => $groups, 'kinds' => $kinds, 'types' => $types, 'type_counts' => $type_counts, 'points' => $points, 'total' => count($posts)];
 }
 
@@ -79,7 +81,7 @@ function card(array $unit): string
     $post = $unit['post'];
     $fields = $unit['fields'];
     $kind = $unit['kind'];
-    $html = '<article class="botud-unit" data-unit-id="'.$post->ID.'" data-kind="'.esc_attr($kind ? $kind->slug : '').'" data-methods="'.esc_attr(implode(' ', unit_filter_keys($fields))).'" data-unit-type="'.esc_attr($fields['unit_type']).'">';
+    $html = '<article class="botud-unit" data-unit-id="'.$post->ID.'" data-kind="'.esc_attr($kind ? $kind->slug : '').'" data-methods="'.esc_attr(implode(' ', unit_filter_keys($fields))).'" data-unit-type="'.esc_attr(unit_filter_type($fields)).'">';
     $image = get_the_post_thumbnail($post, 'medium', ['class' => 'botud-unit-image', 'loading' => 'lazy']);
     if ($image) {
         $html .= $image;

@@ -9,6 +9,20 @@ function unit_types(): array
     return ['pack' => 'Gromada Zuchowa', 'troop' => 'Drużyna', 'club' => 'Klub', 'circle' => 'Krąg', 'group' => 'Szczep', 'troop_union' => 'Związek Drużyn', 'district' => 'Hufiec'];
 }
 
+function filter_unit_types(): array
+{
+    $types = unit_types();
+    unset($types['pack']);
+    $types['troop'] = 'Drużyny i gromady';
+    return $types;
+}
+
+function unit_filter_type(array $fields): string
+{
+    $type = $fields['unit_type'] ?? '';
+    return $type === 'pack' ? 'troop' : $type;
+}
+
 function methodologies(): array
 {
     return ['cub' => 'Zuchowa', 'scout' => 'Harcerska', 'older_scout' => 'Starszoharcerska', 'rover' => 'Wędrownicza'];

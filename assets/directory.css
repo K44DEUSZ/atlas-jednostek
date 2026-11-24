@@ -563,6 +563,11 @@
 .botud a.botud-link:hover {
   filter: brightness(0.92);
 }
+.botud a.botud-link.botud-contact:is(:hover, :focus-visible, :active) {
+  background: var(--botud-accent);
+  border-color: var(--botud-accent);
+  color: var(--botud-button-ink);
+}
 @media (max-width: 1199.98px) {
   .botud-layout {
     grid-template-columns: 1fr;
