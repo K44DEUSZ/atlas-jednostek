@@ -64,6 +64,18 @@
           ? 'Drużyna Wielopoziomowa'
           : config.troopLabels[selected[0]] || 'Drużyna';
     document.getElementById('botud-type-preview').textContent = label;
+    const automaticAge = ['pack', 'troop'].includes(type.value);
+    const manualAge = document.querySelector('[data-botud-manual-age]');
+    manualAge.hidden = automaticAge;
+    manualAge.classList.toggle('hidden', automaticAge);
+    manualAge.querySelector('input').readOnly = automaticAge;
+    const ageMethods = type.value === 'pack' ? ['cub'] : selected;
+    const ranges = ageMethods
+      .map((method) => config.ageRanges[method])
+      .filter(Boolean);
+    document.getElementById('botud-age-preview').textContent = ranges.length
+      ? `${Math.min(...ranges.map((range) => range[0]))}–${Math.max(...ranges.map((range) => range[1]))} lat`
+      : 'Uzupełnij metodyki';
     document.getElementById('botud-role-preview').textContent =
       config.roles[type.value]?.[role.value]?.[gender.value] ||
       'Osoba prowadząca';

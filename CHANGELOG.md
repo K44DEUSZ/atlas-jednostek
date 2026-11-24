@@ -12,5 +12,6 @@
 - Czytelny tekst przycisków kontaktowych także po najechaniu i przy obsłudze klawiaturą.
 - Filtry zależne od typu: metodyki drużyn i gromad, rodzaje kręgów oraz rodzaje i specjalności klubów, z czyszczeniem wyborów po zmianie typu.
 - Rozpoznawalne ikony Facebooka i Instagrama przy tekstowych etykietach kontaktów.
+- Wiek drużyn i gromad wyliczany z metodyk, z łącznym zakresem dla drużyn wielopoziomowych.
 - Ikony metodyk z możliwością wyboru obrazów w bibliotece WordPressa.
 - Samodzielny pakiet, zgodność danych, dokumentacja i kontrola paczki.

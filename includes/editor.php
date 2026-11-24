@@ -41,7 +41,9 @@ function identity_box(\WP_Post $post): void
     echo '<div data-botud-specialty="other">';
     input_field('botud_unit[specialty_name]', 'Nazwa innej zatwierdzonej specjalności', (string) ($fields['specialty_name'] ?? ''));
     echo '</div></div><p><strong>Oznaczenie jednostki: </strong><output id="botud-type-preview">'.esc_html(unit_type_label($fields)).'</output></p>';
+    echo '<p data-botud-types="troop pack"><strong>Orientacyjny wiek uczestników: </strong><output id="botud-age-preview">'.esc_html(unit_age_label($fields) ?: 'Uzupełnij metodyki').'</output><br><span class="description">Zakres wynika z metodyk. Dla drużyny wielopoziomowej łączy zakresy wybranych metodyk.</span></p><div data-botud-manual-age>';
     input_field('botud_unit[age]', 'Wiek uczestników (opcjonalny)', (string) ($fields['age'] ?? ''));
+    echo '</div>';
 }
 
 function contact_box(\WP_Post $post): void
@@ -103,7 +105,7 @@ add_action('admin_enqueue_scripts', static function (): void {
             }
         }
     }
-    wp_localize_script('atlas-jednostek-admin', 'botudEditor', ['roles' => $roles, 'roleChoices' => array_combine(array_keys(unit_types()), array_map(__NAMESPACE__.'\\leader_roles', array_keys(unit_types()))), 'types' => unit_types(), 'troopLabels' => ['cub' => 'Gromada Zuchowa', 'scout' => 'Drużyna Harcerska', 'older_scout' => 'Drużyna Starszoharcerska', 'rover' => 'Drużyna Wędrownicza'], 'legacyMultilevel' => isset($_GET['post']) && !empty(unit_data(absint($_GET['post']))['legacy_multilevel'])]);
+    wp_localize_script('atlas-jednostek-admin', 'botudEditor', ['ageRanges' => methodology_age_ranges(), 'roles' => $roles, 'roleChoices' => array_combine(array_keys(unit_types()), array_map(__NAMESPACE__.'\\leader_roles', array_keys(unit_types()))), 'types' => unit_types(), 'troopLabels' => ['cub' => 'Gromada Zuchowa', 'scout' => 'Drużyna Harcerska', 'older_scout' => 'Drużyna Starszoharcerska', 'rover' => 'Drużyna Wędrownicza'], 'legacyMultilevel' => isset($_GET['post']) && !empty(unit_data(absint($_GET['post']))['legacy_multilevel'])]);
 });
 
 function posted_unit_fields(): array

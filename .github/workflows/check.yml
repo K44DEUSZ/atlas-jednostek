@@ -24,6 +24,7 @@ jobs:
         with:
           node-version: '22'
       - run: php tools/check.php
+      - run: php tools/test-age.php
       - run: node --check assets/admin.js
       - run: node --check assets/directory.js
       - run: node --check assets/filter-controls.js

@@ -28,6 +28,25 @@ function methodologies(): array
     return ['cub' => 'Zuchowa', 'scout' => 'Harcerska', 'older_scout' => 'Starszoharcerska', 'rover' => 'Wędrownicza'];
 }
 
+function methodology_age_ranges(): array
+{
+    return ['cub' => [6, 10], 'scout' => [10, 13], 'older_scout' => [13, 16], 'rover' => [15, 21]];
+}
+
+function unit_age_label(array $fields): string
+{
+    $type = $fields['unit_type'] ?? '';
+    if (!in_array($type, ['pack', 'troop'], true)) {
+        return (string) ($fields['age'] ?? '');
+    }
+    $methods = $type === 'pack' ? ['cub'] : ($fields['methodologies'] ?? []);
+    $ranges = array_intersect_key(methodology_age_ranges(), array_flip($methods));
+    if (!$ranges) {
+        return '';
+    }
+    return min(array_column($ranges, 0)).'–'.max(array_column($ranges, 1)).' lat';
+}
+
 function circle_types(): array
 {
     return ['academic' => 'Akademicki', 'seminary' => 'Klerycki', 'instructor' => 'Instruktorski', 'older_members' => 'Starszyzny', 'senior' => 'Seniorów', 'instructor_older' => 'Instruktorów i starszyzny', 'instructor_senior' => 'Instruktorów i seniorów', 'older_senior' => 'Starszyzny i seniorów', 'mixed' => 'Instruktorów, starszyzny i seniorów'];

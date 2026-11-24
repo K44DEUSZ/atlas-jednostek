@@ -22,6 +22,8 @@ Obsługiwane typy: Gromada Zuchowa, Drużyna, Klub, Krąg, Szczep, Związek Dru�
 
 Gromada ma automatycznie metodykę zuchową. Dla drużyny wybierasz jedną lub więcej metodyk: zuchową, harcerską, starszoharcerską i wędrowniczą. Co najmniej dwie dają oznaczenie Drużyny Wielopoziomowej. Sama metodyka zuchowa zapisuje Gromadę Zuchową. Drużyna nadal pojawia się w filtrach każdej z wybranych metodyk.
 
+Orientacyjny wiek drużyn i gromad wynika automatycznie z metodyk: zuchowa 6–10 lat, harcerska 10–13, starszoharcerska 13–16, wędrownicza 15–21. Drużyna wielopoziomowa pokazuje zakres od najmłodszego do najstarszego wieku wybranych metodyk. Brak potwierdzonych metodyk nie tworzy domyślnego wieku. Dla pozostałych typów opcjonalny wiek można podać ręcznie. Zakresy odpowiadają sekcji II „Systemu metodycznego ZHP”, przyjętego uchwałą nr 84/XL Rady Naczelnej ZHP z 26 czerwca 2021 r. ([dokument](https://swidnica.zhp.pl/wp-content/uploads/2022/08/SYSTEM-METODYCZNY-I-REGULAMIN-SIM.pdf)); mają charakter orientacyjny.
+
 Klub ma wybór HKS albo HGR. Dla HKS wybierasz specjalność. HGR otrzymuje specjalność ratowniczą. Lista obejmuje standardowe specjalności harcerskie i możliwość opisania innej zatwierdzonej specjalności.
 
 Krąg może być akademicki, klerycki, instruktorski, starszyzny, seniorów lub łączyć wskazane grupy instruktorów, starszyzny i seniorów. Szczep, Związek Drużyn i Hufiec mają prosty formularz bez metodyk drużyny.
@@ -116,6 +118,7 @@ Z katalogu repozytorium wykonaj:
 
 ```text
 php tools/check.php
+php tools/test-age.php
 node --check assets/admin.js
 node --check assets/directory.js
 node --check assets/filter-controls.js

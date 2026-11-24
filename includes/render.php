@@ -120,9 +120,9 @@ function card(array $unit): string
     if ($post->post_content) {
         $html .= '<div class="botud-description">'.wpautop(wp_kses_post($post->post_content)).'</div>';
     }
-    foreach (['area','age'] as $key) {
-        if (!empty($fields[$key])) {
-            $html .= '<p>'.esc_html($fields[$key]).'</p>';
+    foreach ([$fields['area'] ?? '', unit_age_label($fields)] as $value) {
+        if ($value !== '') {
+            $html .= '<p>'.esc_html($value).'</p>';
         }
     }
     if (!empty($fields['leader'])) {
