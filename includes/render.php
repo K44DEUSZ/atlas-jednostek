@@ -70,7 +70,8 @@ function directory_data(): array
         $points[$key]['units'][] = $unit;
         $points[$key]['unit_ids'][] = $unit['post']->ID;
     }
-    return ['groups' => $groups, 'kinds' => $kinds, 'types' => unit_types(), 'type_counts' => $type_counts, 'points' => $points, 'total' => count($posts)];
+    $types = array_intersect_key(unit_types(), array_filter($type_counts));
+    return ['groups' => $groups, 'kinds' => $kinds, 'types' => $types, 'type_counts' => $type_counts, 'points' => $points, 'total' => count($posts)];
 }
 
 function card(array $unit): string

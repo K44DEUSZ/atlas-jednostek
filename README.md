@@ -84,7 +84,7 @@ Publiczny serwer OSM nie zapewnia SLA. Wtyczka korzysta z normalnego cache przeg
 
 ## Filtry i ikony metodyk
 
-Rozwijane filtry mają spójny wygląd z wykazem. Klawiaturą użyj strzałek, Home/End i wpisywania początku nazwy; Enter lub Tab zatwierdza, Escape zamyka bez zmiany. Wybór typu albo punktu rozwija pasujące wyniki. Filtr Typ jednostki zawiera cały katalog siedmiu typów, także pozycje bez opublikowanych rekordów; liczba przy opcji opisuje łączną liczbę jednostek tego typu w wykazie. Nie tworzy to automatycznie nowych jednostek.
+Rozwijane filtry mają spójny wygląd z wykazem. Klawiaturą użyj strzałek, Home/End i wpisywania początku nazwy; Enter lub Tab zatwierdza, Escape zamyka bez zmiany. Wybór typu albo punktu rozwija pasujące wyniki. Publiczny filtr Typ jednostki pokazuje wyłącznie typy mające opublikowane jednostki w wykazie; liczba przy opcji opisuje ich łączną liczbę. Szkic nie dodaje typu do filtra. Pełny katalog siedmiu typów jest dostępny podczas dodawania i edycji jednostki w panelu WordPressa.
 
 W Ustawieniach → Wygląd wybierzesz ikony metodyk z natywnej biblioteki mediów. Bez własnych obrazów działają proste symbole pomocnicze. Dla drużyn wielopoziomowych domyślnie łączone są cztery ikony. Własna ikona może zastąpić tę kompozycję. Oficjalne materiały identyfikacji wizualnej można przypisać w konkretnej witrynie zgodnie z jej uprawnieniami; nie są dołączone do uniwersalnej paczki. Zmiana ikony wymaga zapisania ustawień.
 
