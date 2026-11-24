@@ -11,5 +11,6 @@
 - Wspólny publiczny wybór „Drużyny i gromady” z zachowaniem nazw i metodyk jednostek.
 - Czytelny tekst przycisków kontaktowych także po najechaniu i przy obsłudze klawiaturą.
 - Filtry zależne od typu: metodyki drużyn i gromad, rodzaje kręgów oraz rodzaje i specjalności klubów, z czyszczeniem wyborów po zmianie typu.
+- Rozpoznawalne ikony Facebooka i Instagrama przy tekstowych etykietach kontaktów.
 - Ikony metodyk z możliwością wyboru obrazów w bibliotece WordPressa.
 - Samodzielny pakiet, zgodność danych, dokumentacja i kontrola paczki.

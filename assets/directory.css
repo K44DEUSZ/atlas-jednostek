@@ -555,6 +555,15 @@
   overflow-wrap: anywhere;
   transition: filter 0.15s;
 }
+.botud a.botud-social-link {
+  gap: 8px;
+}
+.botud .botud-social-icon {
+  display: block;
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+}
 .botud a.botud-contact {
   background: var(--botud-accent);
   border-color: var(--botud-accent);

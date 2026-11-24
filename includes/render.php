@@ -88,6 +88,16 @@ function directory_data(): array
     return ['groups' => $groups, 'kinds' => $kinds, 'types' => $types, 'type_counts' => $type_counts, 'facets' => $facets, 'points' => $points, 'total' => count($posts)];
 }
 
+function social_icon(string $network): string
+{
+    $shape = match ($network) {
+        'facebook' => '<path fill="currentColor" d="M14.2 22v-8.7h2.9l.5-3.4h-3.4V7.7c0-1 .3-1.7 1.7-1.7h1.8V3c-.8-.1-1.7-.2-2.6-.2-2.6 0-4.4 1.6-4.4 4.6v2.5H7.8v3.4h2.9V22h3.5Z"/>',
+        'instagram' => '<rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor"/>',
+        default => '',
+    };
+    return $shape === '' ? '' : '<svg class="botud-social-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false">'.$shape.'</svg>';
+}
+
 function card(array $unit): string
 {
     $post = $unit['post'];
@@ -137,7 +147,8 @@ function card(array $unit): string
     }
     foreach (['facebook' => 'Facebook','instagram' => 'Instagram','website' => 'Strona internetowa'] as $key => $label) {
         if (!empty($fields[$key])) {
-            $links .= '<a class="botud-link" href="'.esc_url($fields[$key], ['http','https']).'">'.$label.'</a>';
+            $icon = social_icon($key);
+            $links .= '<a class="botud-link'.($icon ? ' botud-social-link' : '').'" href="'.esc_url($fields[$key], ['http','https']).'">'.$icon.esc_html($label).'</a>';
         }
     }
     return $html.($links ? '<div class="botud-links">'.$links.'</div>' : '').'</article>';
